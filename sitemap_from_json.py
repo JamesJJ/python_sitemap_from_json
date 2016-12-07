@@ -14,7 +14,7 @@ import json
 import re
 import sitemap.generator as smg
 from pprint import pformat as pf
-from pprint import pprint as pp
+# from pprint import pprint as pp
 
 
 log_level = str(os.getenv('LOG_LEVEL', 'INFO')).upper()
@@ -76,12 +76,29 @@ def get_url_data(url, cc):
     )
     try:
         r = http.request(
-            'GET', url.format(
-                cc.upper()), retries=urllib3.Retry(
-                total=8, connect=2.0, read=6.0, redirect=0))
+            'GET',
+            url.format(
+                cc.upper()),
+            retries=urllib3.Retry(
+                total=4,
+                connect=2.0,
+                read=6.0,
+                redirect=0,
+                raise_on_status=True,
+                raise_on_redirect=True,
+                status_forcelist=[
+                    500,
+                    501,
+                    502,
+                    503,
+                    504,
+                    400,
+                    401,
+                    403,
+                    404]))
         response = r.data.decode('utf-8')
-    except:
-        log.error("Error getting: " + json_url)
+    except urllib3.exceptions.HTTPError as e:
+        log.error("Error getting: %r\n%r" % (json_url, e))
         response = """"""
     return response
 

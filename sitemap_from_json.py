@@ -119,7 +119,6 @@ def find_country_app_id(s, cc):
                     lst.append(app_id)
     except (json.JSONDecodeError, KeyError) as e:
         log.warning("JSON Error: %r" % e)
-        pass
     return lst
 
 

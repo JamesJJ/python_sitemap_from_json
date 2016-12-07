@@ -105,6 +105,8 @@ def get_url_data(url, cc):
 
 def find_country_app_id(s, cc):
     lst = []
+    if not s:
+        return lst
     try:
         j = json.loads(s)
         for content in j['contents']:
@@ -115,7 +117,8 @@ def find_country_app_id(s, cc):
             for app_id in content['app_ids']:
                 if app_id not in lst:
                     lst.append(app_id)
-    except:
+    except (json.JSONDecodeError, KeyError) as e:
+        log.warning("JSON Error: %r" % e)
         pass
     return lst
 
